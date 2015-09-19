@@ -1,29 +1,29 @@
 package bigredhacks.harmonic;
 
-import android.content.Context;
 import android.media.MediaRecorder;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.echonest.api.v4.EchoNestAPI;
+
+import java.io.DataInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-
-import org.apache.httpco
-
+import java.io.InputStream;
 
 public class MainActivity extends AppCompatActivity {
     private static final String LOG_TAG = "MainActivityTest";
     private static final String MUSIC_LOG = "music-log.txt";
     private static final String SONG_FILE = "song.3gp";
+    private static final String API_KEY = "";
 
     private boolean listening = false;
     //private String currentSong = null;
     private MediaRecorder mediaRecorder;
+    private EchoNestAPI echoNest = new EchoNestAPI(API_KEY);
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
         while (listening) {
             try {
-                Thread.sleep(90000);
+                Thread.sleep(2400000);
             }
             catch (final InterruptedException e) {
                 Log.d(LOG_TAG, "Unable to sleep: " + e.getMessage());
@@ -68,14 +68,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void processSong() {
+        try {
+            Thread.sleep(20000);
+        }
+        catch (final InterruptedException e) {
+            Log.d(LOG_TAG, "Unabled to sleep: " + e.getMessage());
+        }
+
         final String songFile = getFilesDir().getAbsolutePath() + "/" + SONG_FILE;
 
         try {
-            FileOutputStream fos = openFileOutput(songFile, Context.MODE_PRIVATE);
+            final InputStream fis = openFileInput(songFile);
+            final DataInputStream dataInputStream = new DataInputStream(fis);
 
+            String songData = dataInputStream.readUTF();
         }
         catch (final FileNotFoundException e) {
             Log.d(LOG_TAG, "Unable to find file: " + e.getMessage());
+        }
+        catch (final IOException e) {
+            Log.d(LOG_TAG, "Unabled to read file: " + e.getMessage());
         }
     }
 
