@@ -8,7 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
-    private static String MUSIC_LOG_FILE = "music_log_file"
+    private static String MUSIC_LOG_FILE = "music_log_file";
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -17,13 +17,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Start listening to music
-    public static void startListening() {
-        MediaRecorder mediaRecorder = new MediaRecorder();
-        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        mediaRecorder.setOutputFile(SONG_FILE);
-        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-    }
+//    public static void startListening() {
+//        MediaRecorder mediaRecorder = new MediaRecorder();
+//        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+//        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+//        mediaRecorder.setOutputFile(SONG_FILE);
+//        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+//    }
 
     // Stop listening to music and persist data
     private void stopListening() {
@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
                 final String stopString = getResources().getString(R.string.stop);
                 if (itemTitle.equals(startString)) {
                     item.setTitle(stopString);
-                    startListening();
+//                    startListening();
                 } else if (itemTitle.equals(stopString)) {
                     item.setTitle(startString);
                     stopListening();
