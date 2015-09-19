@@ -1,9 +1,11 @@
 package bigredhacks.harmonic;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -11,6 +13,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+    }
+
+    /** Callback to start app */
+    public void onMainButtonClick(View view) {
+        Button mainButton = (Button) findViewById(R.id.main_button);
+        if (mainButton.getText().equals(getString(R.string.start))) {
+            // Start ListeningActivity
+        }
+        else {
+
+        }
     }
 
     @Override

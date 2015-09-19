@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">Harmonic</string>
 
-    <string name="hello_world">Hello world!</string>
+    <string name="welcome_to_app">Welcome to Harmonic!</string>
+    <string name="music_log">Music Log</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
     <string name="action_settings">Settings</string>
 </resources>
