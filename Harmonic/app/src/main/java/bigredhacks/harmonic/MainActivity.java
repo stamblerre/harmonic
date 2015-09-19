@@ -1,5 +1,6 @@
 package bigredhacks.harmonic;
 
+import android.app.ActionBar;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d(LOG_TAG, songFile);
 
         this.mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        this.mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        this.mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
         this.mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         this.mediaRecorder.setOutputFile(songFile);
         this.listening.set(true);
@@ -106,31 +107,31 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     private void logShit(){
-        String title = "TRYING";
-        String artist = "TODOTHIS";
 
-        LinearLayout v = (LinearLayout) findViewById(R.id.linearLayout1);
 
-        TextView newText = new TextView(this);
-        newText.setText(title + " " + artist);
-
-        v.addView(newText);
 
     }
-private void logNewSong(Song song) {
-        String title = song.getTitle();
-        String artist = song.getArtistName();
+private void logNewSong(final Song song) {
+    runOnUiThread(new Runnable() {
+        @Override
+        public void run() {
+            String title = song.getTitle();
+            String artist = song.getArtistName();
 
-        LayoutInflater inflater = getLayoutInflater();
+            LinearLayout v = (LinearLayout) findViewById(R.id.linearLayout1);
 
-        View view = inflater.inflate(R.layout.activity_main, null);
-        LinearLayout lView = (LinearLayout)view;
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            TextView newText = new TextView(v.getContext());
+            newText.setText(title + " " + artist);
 
-        TextView newText = new TextView(this);
-        newText.setText(title + " " + artist);
+            v.addView(newText, params);
 
-        lView.addView(newText);
-    }
+
+        }
+    });
+}
 
     // Stop listening to music and persist data
     private void stopListening() {
@@ -162,9 +163,8 @@ private void logNewSong(Song song) {
                 if (itemTitle.equals(startString)) {
                     item.setTitle(stopString);
                     new Thread(new Runnable() {
-                        public void run() {
-                            logShit();
-                            //startListening();
+                        public void run(){
+                            startListening();
                         }
                     }).start();
                 } else if (itemTitle.equals(stopString)) {
