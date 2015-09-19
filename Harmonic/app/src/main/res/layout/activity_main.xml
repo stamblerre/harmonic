@@ -8,14 +8,4 @@
     <TextView android:text="@string/welcome_to_app" android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <Button
-        android:id="@+id/main_button"
-        android:layout_width="185dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="250dp"
-        android:layout_centerHorizontal="true"
-        android:text="@string/start"
-        android:onClick="onMainButtonClick"/>
-
 </RelativeLayout>

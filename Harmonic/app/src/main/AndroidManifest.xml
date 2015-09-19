@@ -16,10 +16,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ListeningActivity"
-            android:label="Harmonic">
-        </activity>
     </application>
 
 </manifest>
