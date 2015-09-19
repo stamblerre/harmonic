@@ -14,6 +14,7 @@ import com.echonest.api.v4.Track;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MainActivity extends AppCompatActivity {
     private static final String LOG_TAG = "MainActivityTest";
@@ -21,10 +22,11 @@ public class MainActivity extends AppCompatActivity {
     private static final String SONG_FILE = "song.3gp";
     private static final String API_KEY = "6FTQBUXCB2QEJN2IU";
 
-    private boolean listening = false;
+    private final AtomicBoolean listening = new AtomicBoolean(false);
+    private final EchoNestAPI echoNest = new EchoNestAPI(API_KEY);
+
     private Song currentSong = null;
     private MediaRecorder mediaRecorder;
-    private EchoNestAPI echoNest = new EchoNestAPI(API_KEY);
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -35,14 +37,14 @@ public class MainActivity extends AppCompatActivity {
     // Start listening to music
     public void startListening() {
         mediaRecorder = new MediaRecorder();
-        final String songFile = getFilesDir().getAbsolutePath() + "/" + SONG_FILE;
+        final String songFile = getFilesDir().getAbsolutePath() + File.separator + SONG_FILE;
         Log.d(LOG_TAG, songFile);
 
-        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-        mediaRecorder.setOutputFile(songFile);
-        listening = true;
+        this.mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        this.mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        this.mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        this.mediaRecorder.setOutputFile(songFile);
+        this.listening.set(true);
 
         try {
             mediaRecorder.prepare();
@@ -50,44 +52,45 @@ public class MainActivity extends AppCompatActivity {
             Log.d(LOG_TAG, "Unable to prepare recording device: " + e.getMessage());
         }
 
-        mediaRecorder.start();
+        this.mediaRecorder.start();
+        Log.d(LOG_TAG, "Started media recorder.");
 
-        while (listening) {
-            try {
+        while (this.listening.get()) {
+            /*try {
                 Thread.sleep(2400000);
             }
             catch (final InterruptedException e) {
                 Log.d(LOG_TAG, "Unable to sleep: " + e.getMessage());
-            }
+            }*/
             Log.d(LOG_TAG, "Listening!!!!");
             processSong();
         }
 
-        mediaRecorder.release(); // TODO Will Android release this if the app is killed without calling stopListening()?
+        this.mediaRecorder.release(); // TODO Will Android release this if the app is killed without calling stopListening()?
 
         Log.d(LOG_TAG, "Media recorder released!");
     }
 
     private void processSong() {
         try {
-            Thread.sleep(20000);
-
-            final File songFile = new File(getFilesDir().getAbsolutePath() + "/" + SONG_FILE);
-            final Track track = echoNest.uploadTrack(songFile);
+            //Thread.sleep(20000);
+            Log.d(LOG_TAG, "Process song!");
+            final File songFile = new File(getFilesDir().getAbsolutePath() + File.separator + SONG_FILE);
+            final Track track = this.echoNest.uploadTrack(songFile);
 
             track.waitForAnalysis(30000);
             if (track.getStatus() == Track.AnalysisStatus.COMPLETE) {
-                final Song song = new Song(echoNest, track.getSongID());
+                final Song song = new Song(this.echoNest, track.getSongID());
                 Log.d(LOG_TAG, "Song is: " + song.getTitle() + " by " + song.getArtistName());
 
-                if (!song.equals(currentSong)) {
+                if (!song.equals(this.currentSong)) {
                     logNewSong();
                 }
             }
         }
-        catch (final InterruptedException e) {
+        /*catch (final InterruptedException e) {
             Log.d(LOG_TAG, "Unable to sleep: " + e.getMessage());
-        }
+        }*/
         catch (final IOException e) {
             Log.d(LOG_TAG, "Unable to read file: " + e.getMessage());
         }
@@ -102,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
     // Stop listening to music and persist data
     private void stopListening() {
         Log.d(LOG_TAG, "Clicked stop!");
-        listening = false;
+        this.listening.set(false);
     }
 
     @Override
@@ -125,9 +128,14 @@ public class MainActivity extends AppCompatActivity {
                 final CharSequence itemTitle = item.getTitle();
                 final String startString = getResources().getString(R.string.start);
                 final String stopString = getResources().getString(R.string.stop);
+
                 if (itemTitle.equals(startString)) {
                     item.setTitle(stopString);
-                    startListening();
+                    new Thread(new Runnable() {
+                        public void run() {
+                            startListening();
+                        }
+                    }).start();
                 } else if (itemTitle.equals(stopString)) {
                     item.setTitle(startString);
                     stopListening();
