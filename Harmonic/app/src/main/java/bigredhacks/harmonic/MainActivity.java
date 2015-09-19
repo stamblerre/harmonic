@@ -109,18 +109,13 @@ public class MainActivity extends AppCompatActivity {
         String title = "TRYING";
         String artist = "TODOTHIS";
 
-        LayoutInflater inflater = getLayoutInflater();
-
-        View view = inflater.inflate(R.layout.activity_main, null);
-        RelativeLayout lView = (RelativeLayout)view;
+        LinearLayout v = (LinearLayout) findViewById(R.id.linearLayout1);
 
         TextView newText = new TextView(this);
         newText.setText(title + " " + artist);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
-        params.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
 
-        lView.addView(newText, params);
+        v.addView(newText);
+
     }
 private void logNewSong(Song song) {
         String title = song.getTitle();
