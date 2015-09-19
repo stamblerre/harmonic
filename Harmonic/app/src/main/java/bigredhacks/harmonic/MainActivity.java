@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.LayoutInflater;
 import android.content.Context;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.LinearLayout;
 
@@ -111,12 +112,15 @@ public class MainActivity extends AppCompatActivity {
         LayoutInflater inflater = getLayoutInflater();
 
         View view = inflater.inflate(R.layout.activity_main, null);
-        LinearLayout lView = (LinearLayout)view;
+        RelativeLayout lView = (RelativeLayout)view;
 
         TextView newText = new TextView(this);
         newText.setText(title + " " + artist);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
+        params.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
 
-        lView.addView(newText);
+        lView.addView(newText, params);
     }
 private void logNewSong(Song song) {
         String title = song.getTitle();
@@ -156,7 +160,7 @@ private void logNewSong(Song song) {
         // Handle presses on the action bar items
         switch (item.getItemId()) {
             case R.id.action_start:
-                final CharSequence itemTitle = item.getTitle();it 
+                final CharSequence itemTitle = item.getTitle();
                 final String startString = getResources().getString(R.string.start);
                 final String stopString = getResources().getString(R.string.stop);
 
