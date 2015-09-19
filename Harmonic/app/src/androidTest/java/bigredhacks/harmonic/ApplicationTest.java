@@ -1,4 +1,4 @@
-package harmonic.myapplication;
+package bigredhacks.harmonic;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
