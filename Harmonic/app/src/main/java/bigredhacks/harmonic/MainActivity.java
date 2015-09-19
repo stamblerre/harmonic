@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String LOG_TAG = "MainActivityTest";
     private static final String MUSIC_LOG = "music-log.txt";
     private static final String SONG_FILE = "song.3gp";
-    private static final String API_KEY = "";
+    private static final String API_KEY = "6FTQBUXCB2QEJN2IU";
 
     private boolean listening = false;
     //private String currentSong = null;
