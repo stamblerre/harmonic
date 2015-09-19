@@ -8,20 +8,21 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.echonest.api.v4.EchoNestAPI;
+import com.echonest.api.v4.EchoNestException;
+import com.echonest.api.v4.Song;
+import com.echonest.api.v4.Track;
 
-import java.io.DataInputStream;
-import java.io.FileNotFoundException;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 
 public class MainActivity extends AppCompatActivity {
     private static final String LOG_TAG = "MainActivityTest";
     private static final String MUSIC_LOG = "music-log.txt";
     private static final String SONG_FILE = "song.3gp";
-    private static final String API_KEY = "";
+    private static final String API_KEY = "6FTQBUXCB2QEJN2IU";
 
     private boolean listening = false;
-    //private String currentSong = null;
+    private Song currentSong = null;
     private MediaRecorder mediaRecorder;
     private EchoNestAPI echoNest = new EchoNestAPI(API_KEY);
 
@@ -70,25 +71,32 @@ public class MainActivity extends AppCompatActivity {
     private void processSong() {
         try {
             Thread.sleep(20000);
+
+            final File songFile = new File(getFilesDir().getAbsolutePath() + "/" + SONG_FILE);
+            final Track track = echoNest.uploadTrack(songFile);
+
+            track.waitForAnalysis(30000);
+            if (track.getStatus() == Track.AnalysisStatus.COMPLETE) {
+                final Song song = new Song(echoNest, track.getSongID());
+                Log.d(LOG_TAG, "Song is: " + song.getTitle() + " by " + song.getArtistName());
+
+                if (!song.equals(currentSong)) {
+                    logNewSong();
+                }
+            }
         }
         catch (final InterruptedException e) {
-            Log.d(LOG_TAG, "Unabled to sleep: " + e.getMessage());
-        }
-
-        final String songFile = getFilesDir().getAbsolutePath() + "/" + SONG_FILE;
-
-        try {
-            final InputStream fis = openFileInput(songFile);
-            final DataInputStream dataInputStream = new DataInputStream(fis);
-
-            String songData = dataInputStream.readUTF();
-        }
-        catch (final FileNotFoundException e) {
-            Log.d(LOG_TAG, "Unable to find file: " + e.getMessage());
+            Log.d(LOG_TAG, "Unable to sleep: " + e.getMessage());
         }
         catch (final IOException e) {
-            Log.d(LOG_TAG, "Unabled to read file: " + e.getMessage());
+            Log.d(LOG_TAG, "Unable to read file: " + e.getMessage());
         }
+        catch (final EchoNestException e) {
+            Log.d(LOG_TAG, "Unable to analyze song: " + e.getMessage());
+        }
+    }
+
+    private void logNewSong() {
     }
 
     public void postData() {
