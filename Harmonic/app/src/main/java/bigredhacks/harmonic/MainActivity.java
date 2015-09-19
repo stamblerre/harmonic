@@ -4,8 +4,13 @@ import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.*;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.LayoutInflater;
+import android.content.Context;
+import android.widget.TextView;
+import android.widget.LinearLayout;
 
 import com.echonest.api.v4.EchoNestAPI;
 import com.echonest.api.v4.EchoNestException;
@@ -83,8 +88,9 @@ public class MainActivity extends AppCompatActivity {
                 final Song song = new Song(this.echoNest, track.getSongID());
                 Log.d(LOG_TAG, "Song is: " + song.getTitle() + " by " + song.getArtistName());
 
-                if (!song.equals(this.currentSong)) {
-                    logNewSong();
+                if (!song.equals(currentSong)) {
+                    logNewSong(song);
+
                 }
             }
         }
@@ -98,8 +104,33 @@ public class MainActivity extends AppCompatActivity {
             Log.d(LOG_TAG, "Unable to analyze song: " + e.getMessage());
         }
     }
+    private void logShit(){
+        String title = "TRYING";
+        String artist = "TODOTHIS";
 
-    private void logNewSong() {
+        LayoutInflater inflater = getLayoutInflater();
+
+        View view = inflater.inflate(R.layout.activity_main, null);
+        LinearLayout lView = (LinearLayout)view;
+
+        TextView newText = new TextView(this);
+        newText.setText(title + " " + artist);
+
+        lView.addView(newText);
+    }
+private void logNewSong(Song song) {
+        String title = song.getTitle();
+        String artist = song.getArtistName();
+
+        LayoutInflater inflater = getLayoutInflater();
+
+        View view = inflater.inflate(R.layout.activity_main, null);
+        LinearLayout lView = (LinearLayout)view;
+
+        TextView newText = new TextView(this);
+        newText.setText(title + " " + artist);
+
+        lView.addView(newText);
     }
 
     // Stop listening to music and persist data
@@ -125,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
         // Handle presses on the action bar items
         switch (item.getItemId()) {
             case R.id.action_start:
-                final CharSequence itemTitle = item.getTitle();
+                final CharSequence itemTitle = item.getTitle();it 
                 final String startString = getResources().getString(R.string.start);
                 final String stopString = getResources().getString(R.string.stop);
 
@@ -133,7 +164,8 @@ public class MainActivity extends AppCompatActivity {
                     item.setTitle(stopString);
                     new Thread(new Runnable() {
                         public void run() {
-                            startListening();
+                            logShit();
+                            //startListening();
                         }
                     }).start();
                 } else if (itemTitle.equals(stopString)) {
